@@ -8,6 +8,7 @@ public class AssetLocationFeature extends ServerFeature {
   {
     assets("/", "welcome.html");
 
+    assets("/js/lib/*-*-*.js", "/META-INF/resources/webjars/{0}/{1}-{2}/{0}.js");
     assets("/js/lib/*-*.js", "/META-INF/resources/webjars/{0}/{1}/{0}.js");
 
     assets("/js/**", "/META-INF/resources/webjars/{0}");
@@ -32,25 +33,25 @@ public class AssetLocationFeature extends ServerFeature {
   @Test
   public void webjars() throws Exception {
     request()
-        .get("/js/jquery/2.1.3/jquery.js")
+        .get("/js/jquery/3.3.1-1/jquery.js")
         .expect(200)
         .header("Content-Type", "application/javascript;charset=UTF-8")
-        .header("Content-Length", "247387");
+        .header("Content-Length", "271751");
 
     request()
-        .get("/js/jquery/2.1.3/jquery.min.js")
+        .get("/js/jquery/3.3.1-1/jquery.min.js")
         .expect(200)
         .header("Content-Type", "application/javascript;charset=UTF-8")
-        .header("Content-Length", "84355");
+        .header("Content-Length", "86927");
   }
 
   @Test
   public void webjarsMapping() throws Exception {
     request()
-        .get("/js/lib/jquery-2.1.3.js")
+        .get("/js/lib/jquery-3.3.1-1.js")
         .expect(200)
         .header("Content-Type", "application/javascript;charset=UTF-8")
-        .header("Content-Length", "247387");
+        .header("Content-Length", "271751");
 
   }
 
