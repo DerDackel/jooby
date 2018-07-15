@@ -273,10 +273,10 @@ public class ServletServletResponse implements NativeResponse {
 
   @Override
   public void send(final ByteBuffer buffer) throws Exception {
-    WritableByteChannel channel = Channels.newChannel(rsp.getOutputStream());
-    channel.write(buffer);
-    channel.close();
-    committed = true;
+    try (WritableByteChannel channel = Channels.newChannel(rsp.getOutputStream())) {
+      channel.write(buffer);
+      committed = true;
+    }
   }
 
   @Override
@@ -288,19 +288,19 @@ public class ServletServletResponse implements NativeResponse {
   public void send(final FileChannel channel, final long position, final long count)
       throws Exception {
     try (FileChannel src = channel) {
-      WritableByteChannel dest = Channels.newChannel(rsp.getOutputStream());
-      src.transferTo(position, count, dest);
-      dest.close();
+      try (WritableByteChannel dest = Channels.newChannel(rsp.getOutputStream())) {
+        src.transferTo(position, count, dest);
+      }
       committed = true;
     }
   }
 
   @Override
   public void send(final InputStream stream) throws Exception {
-    ServletOutputStream output = rsp.getOutputStream();
-    ByteStreams.copy(stream, output);
-    output.close();
-    stream.close();
+    try (ServletOutputStream output = rsp.getOutputStream()) {
+      ByteStreams.copy(stream, output);
+      stream.close();
+    }
     committed = true;
   }
 

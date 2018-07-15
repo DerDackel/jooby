@@ -241,7 +241,7 @@ public class ReflectiveJob implements Job {
       Method method = Arrays.stream(loadedClass.getDeclaredMethods())
         .filter(m-> m.getName().equals(methodname))
         .findFirst()
-        .get();
+        .orElseThrow(() -> new IllegalArgumentException(String.format("No method named '%s' found on class '%s'", methodname, loadedClass.getName())));
       final Object result;
       if (method.getParameterCount() == 1) {
         result = method.invoke(job, context);

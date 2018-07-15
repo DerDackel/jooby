@@ -223,6 +223,8 @@ import org.jooby.run.Watcher;
 import org.jooby.funzy.Try;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
@@ -345,10 +347,14 @@ public class JoobyMojo extends AbstractMojo {
 
     Set<File> classpath = new LinkedHashSet<>();
 
-    File hotreload = extra(pluginArtifacts, "jooby-run").get();
-    File jbossModules = extra(pluginArtifacts, "jboss-modules").get();
-    classpath.add(hotreload);
-    classpath.add(jbossModules);
+    try {
+      File hotreload = extra(pluginArtifacts, "jooby-run").orElseThrow(() -> new java.io.FileNotFoundException("jooby-run"));
+      File jbossModules = extra(pluginArtifacts, "jboss-modules").orElseThrow(() -> new java.io.FileNotFoundException("jboss-modules"));
+      classpath.add(hotreload);
+      classpath.add(jbossModules);
+    } catch (FileNotFoundException fnfe) {
+      throw new MojoFailureException("Could not find plugin artifact file", fnfe);
+    }
 
     // prepare commands
     List<Command> cmds = new ArrayList<>();

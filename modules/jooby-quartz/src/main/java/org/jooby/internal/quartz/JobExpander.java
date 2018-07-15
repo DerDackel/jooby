@@ -310,7 +310,7 @@ public class JobExpander {
     Method execute = Arrays.stream(jobType.getDeclaredMethods())
         .filter(m -> m.getName().equals("execute"))
         .findFirst()
-        .get();
+        .orElseThrow(() -> new IllegalArgumentException(String.format("No execute method found on Quartz job %s", jobType.toString())));
     Scheduled scheduled = execute.getAnnotation(Scheduled.class);
     checkArgument(scheduled != null, "Scheduled is missing on %s.%s()", jobType.getName(),
         execute.getName());
